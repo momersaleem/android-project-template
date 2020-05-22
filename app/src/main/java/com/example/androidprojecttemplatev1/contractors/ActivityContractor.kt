@@ -1,0 +1,3 @@
+package com.example.androidprojecttemplatev1.contractors
+
+interface ActivityContractor : NavigationContractor
