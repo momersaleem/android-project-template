@@ -1,52 +1,56 @@
 package com.example.androidprojecttemplatev1.fragments
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.androidprojecttemplatev1.contractors.ErrorContractor
 import com.example.androidprojecttemplatev1.contractors.FragmentContractor
 import com.example.androidprojecttemplatev1.contractors.UIContractor
-import com.example.androidprojecttemplatev1.utils.CommonUtil
-import com.example.androidprojecttemplatev1.utils.FragmentUtil
+import com.example.androidprojecttemplatev1.utils.SnackbarUtil
+import com.example.androidprojecttemplatev1.utils.ToastUtil
 
 abstract class BaseFragment : Fragment(),
     UIContractor,
     ErrorContractor,
     FragmentContractor {
 
-    override fun somethingWentWrong(context: Context) {
-        CommonUtil.somethingWentWrong(context)
-    }
-
-    override fun replaceFragment(
-        activity: AppCompatActivity,
-        container: Int,
+    override fun Fragment.replaceChildFragment(
+        fragmentContainer: Int,
         newFragment: Fragment,
         addBackToStack: Boolean,
         TAG: String
     ) {
-        FragmentUtil.replaceFragment(
-            activity,
-            container,
-            newFragment,
-            addBackToStack,
-            TAG
-        )
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(fragmentContainer, newFragment, TAG)
+        if (addBackToStack)
+            transaction.addToBackStack(TAG)
+        transaction.commit()
     }
 
-    override fun replaceChildFragment(
-        currentFragment: Fragment,
-        container: Int,
+
+    override fun Fragment.addChildFragment(
+        fragmentContainer: Int,
         newFragment: Fragment,
         addBackToStack: Boolean,
         TAG: String
     ) {
-        FragmentUtil.replaceChildFragment(
-            currentFragment,
-            container,
-            newFragment,
-            addBackToStack,
-            TAG
-        )
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.add(fragmentContainer, newFragment, TAG)
+        if (addBackToStack)
+            transaction.addToBackStack(TAG)
+        transaction.commit()
+    }
+
+    override fun showLoaderView() {}
+
+    override fun showErrorView() {}
+
+    override fun showContentView() {}
+
+    override fun somethingWentWrongSnackBar(context: Context) {
+        SnackbarUtil.somethingWentWrong(context)
+    }
+
+    override fun somethingWentWrongToast(context: Context) {
+        ToastUtil.somethingWentWrong(context)
     }
 }

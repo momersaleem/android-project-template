@@ -6,32 +6,38 @@ import androidx.fragment.app.Fragment
 import com.example.androidprojecttemplatev1.contractors.ActivityContractor
 import com.example.androidprojecttemplatev1.contractors.ErrorContractor
 import com.example.androidprojecttemplatev1.contractors.UIContractor
-import com.example.androidprojecttemplatev1.utils.CommonUtil
-import com.example.androidprojecttemplatev1.utils.FragmentUtil
+import com.example.androidprojecttemplatev1.utils.SnackbarUtil
+import com.example.androidprojecttemplatev1.utils.ToastUtil
 
 abstract class BaseActivity : AppCompatActivity(),
     UIContractor,
     ErrorContractor,
     ActivityContractor {
 
-    override fun replaceFragment(
-        activity: AppCompatActivity,
-        container: Int,
+    override fun AppCompatActivity.replaceFragment(
+        fragmentContainer: Int,
         newFragment: Fragment,
         addBackToStack: Boolean,
         TAG: String
     ) {
-        FragmentUtil.replaceFragment(
-            activity,
-            container,
-            newFragment,
-            addBackToStack,
-            TAG
-        )
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(fragmentContainer, newFragment, TAG)
+        if (addBackToStack)
+            transaction.addToBackStack(TAG)
+        transaction.commit()
     }
 
-    override fun somethingWentWrong(context: Context) {
-        CommonUtil.somethingWentWrong(context)
+    override fun AppCompatActivity.addFragment(
+        fragmentContainer: Int,
+        newFragment: Fragment,
+        addBackToStack: Boolean,
+        TAG: String
+    ) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(fragmentContainer, newFragment, TAG)
+        if (addBackToStack)
+            transaction.addToBackStack(TAG)
+        transaction.commit()
     }
 
     override fun showLoaderView() {}
@@ -39,4 +45,12 @@ abstract class BaseActivity : AppCompatActivity(),
     override fun showErrorView() {}
 
     override fun showContentView() {}
+
+    override fun somethingWentWrongSnackBar(context: Context) {
+        SnackbarUtil.somethingWentWrong(this)
+    }
+
+    override fun somethingWentWrongToast(context: Context) {
+        ToastUtil.somethingWentWrong(context)
+    }
 }
